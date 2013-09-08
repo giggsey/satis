@@ -12,6 +12,8 @@
 
 namespace Composer\Satis\Command;
 
+use Composer\Package\Package;
+use Composer\Package\Version\VersionParser;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -333,6 +335,23 @@ EOT
         $templateDir = $template ? pathinfo($template, PATHINFO_DIRNAME) : __DIR__.'/../../../../views';
         $loader = new \Twig_Loader_Filesystem($templateDir);
         $twig = new \Twig_Environment($loader);
+
+        $twig->addFunction(
+            new \Twig_SimpleFunction('getVersionAlias', function (Package $package) {
+                    $extra = $package->getExtra();
+
+                    if (isset($extra['branch-alias'][$package->getPrettyVersion()])) {
+                        $parser = new VersionParser;
+                        $version = $parser->normalizeBranch(
+                            str_replace('-dev', '', $extra['branch-alias'][$package->getPrettyVersion()])
+                        );
+                        return preg_replace('{(\.9{7})+}', '.x', $version);
+                    }
+
+                    return '';
+                }
+            )
+        );
 
         $mappedPackages = $this->getMappedPackageList($packages);
 

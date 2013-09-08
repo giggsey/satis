@@ -1,117 +1,291 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="robots" content="noindex,nofollow" />
+    <meta charset="utf-8"/>
+    <meta name="robots" content="noindex,nofollow"/>
     <title>{{ name }} Composer Repository</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
     <style type="text/css">
-    {% include 'styles.css' %}
+        {% include 'styles.css' %}
     </style>
 </head>
 <body>
 
-    <div id="doc" class="yui-t7">
-        <div id="hd">
-            <h1>{{ name }} Composer Repository</h1>
-            {% if description %}
-                <p>{{ description }}</p>
-            {% endif %}
-        </div>
-        <div id="bd">
-            <div class="yui-g">
-                Adding the repository to <em>composer.json</em>:
-                <pre><code>{
+<div class="container">
+<div class="row">
+<div class="col-sm-4">
+    Filter by package name:
+    <input type="text" id="search" autocomplete="off" autofocus/>
+
+
+    <ul id="packages">
+        {% for name, package in packages %}
+            <li id="{{ package.highest.name }}"><a style="cursor:pointer;">{{ package.highest.name }}</a></li>
+        {% endfor %}
+    </ul>
+
+
+</div>
+<div class="col-sm-8">
+<h1>{{ name }} Composer Repository</h1>
+{% if description %}
+    <p class="lead">{{ description }}</p>
+{% endif %}
+
+<div class="row" id="content">
+<section class="getting-started col-lg-6">
+    <h2>Getting Started</h2>
+
+    <div>
+        <h3>Define Your Dependencies</h3>
+
+        <p>Adding the repository to <em>composer.json</em>:</p>
+                <pre>{
     "repositories": [
         {
             "type": "composer",
             "url": "{{ url }}"
         }
     ]
-}</code></pre>
+}</pre>
 
-                Filter by package name:
-                <input type="text" id="search" autocomplete="off" autofocus />
 
-                {% for name, package in packages %}
-                    <h3 id="{{ package.highest.name }}">{{ package.highest.name }}</h3>
-                    {% if package.highest.description %}
-                        <p>{{ package.highest.description }}</p>
-                    {% endif %}
-                    <table>
-                        {% if package.highest.homepage %}
-                            <tr>
-                                <th>Homepage</th>
-                                <td><a href="{{ package.highest.homepage }}">{{ package.highest.homepage }}</a></td>
-                            </tr>
-                        {% endif %}
-                        {% if package.highest.license %}
-                            <tr>
-                                <th>License</th>
-                                <td>{{ package.highest.license|join(', ') }}</td>
-                            </tr>
-                        {% endif %}
-                        {% if package.highest.authors %}
-                            <tr>
-                                <th>Authors</th>
-                                <td>
-                                    {% for author in package.highest.authors %}
-                                        {%- if author.homepage -%}
-                                            <a href="{{ author.homepage }}">{{ author.name }}</a>
-                                        {%- else -%}
-                                            {{ author.name }}
-                                        {%- endif -%}
-                                        {%- if not loop.last -%}, {% endif -%}
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                        {% endif %}
-                        <tr>
-                            <th>Releases</th>
-                            <td>
-                                {% for version in package.versions %}
-                                    {%- if version.distType -%}
-                                        <a href="{{ version.distUrl }}" title="{{ version.distReference }}">{{ version.prettyVersion }}</a>
-                                    {%- else -%}
-                                        <a href="{{ version.sourceUrl }}" title="{{ version.sourceReference }}">{{ version.prettyVersion }}</a>
-                                    {%- endif -%}
-                                    {%- if not loop.last -%}, {% endif -%}
-                                {% endfor %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Required by</th>
-                            <td>
-                                {% set package_dependencies = attribute(dependencies, name) %}
-                                {% if package_dependencies|length %}
-                                    <ul>
-                                        {% for dependency in package_dependencies %}
-                                            <li><a href="#{{ dependency }}">{{ dependency }}</a></li>
-                                        {% endfor %}
-                                    </ul>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    </table>
-                {% endfor %}
-            </div>
-        </div>
-        <div id="ft">
-            <p><small>This Composer Repository is proudly powered by <a href="https://github.com/composer/satis">Satis</a> {{ constant('Composer\\Satis\\Satis::VERSION') }} - Last updated:  {{ "now"|date(constant('\DateTime::ISO8601')) }}</small></p>
-        </div>
+        <p>Put a file named <em>composer.json</em> at the root of your project, containing your project
+            dependencies:</p>
+                <pre>
+{
+    "require": {
+        "vendor/package": "1.3.2",
+        "vendor/package2": "1.*",
+        "vendor/package3": ">=2.0.3"
+    }
+}
+</pre>
+        <h3>Install Composer In Your Project</h3>
+
+        <p>Run this in your command line:</p>
+                <pre>
+curl -s http://getcomposer.org/installer | php
+</pre>
+        <p>Or <a href="http://getcomposer.org/composer.phar">download composer.phar</a> into your
+            project
+            root.</p>
+
+        <h3>Install Dependencies</h3>
+
+        <p>Execute this in your project root.</p>
+                <pre>
+php composer.phar install
+</pre>
+        <h3>Autoload Dependencies</h3>
+
+        <p>If all your packages follow the <a
+                    href="https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md">PSR-0</a>
+            standard, you can autoload all the dependencies by adding this to your code:</p>
+                <pre>
+require 'vendor/autoload.php';
+</pre>
+
     </div>
+</section>
 
-    <script>
+<section class="publishing-packages col-lg-6">
+    <h2>Publishing Packages</h2>
+
+    <div>
+        <h3>Define Your Package</h3>
+
+        <p>Put a file named <em>composer.json</em> at the root of your package, containing this
+            information:
+        </p>
+                <pre>
+{
+    "name": "your-vendor-name/package-name",
+    "require": {
+        "php": ">=5.3.0",
+        "another-vendor/package": "1.*"
+    }
+}
+</pre>
+        <p>This is the strictly minimal information you have to give.</p>
+
+        <p>For more details about package naming and the fields you can use to document your package
+            better,
+            see the <a href="https://packagist.org/about">about</a> page.</p>
+
+        <h3>Commit The File</h3>
+
+        <p>You surely don't need help with that.</p>
+
+        <h3>Publish It</h3>
+
+        <p>Once you entered your public repository URL in there, your package will be automatically
+            crawled
+            periodically. You just have to make sure you keep the composer.json file up to date.</p>
+    </div>
+</section>
+
+{% for name, package in packages %}
+    <div data-id="{{ package.highest.name }}" style="display: none;">
+        <h2 id="{{ package.highest.name }}">{{ package.highest.name }} <a id="copy"
+                                                                          data-clipboard-text="{{ package.highest.name }}"
+                                                                          title="Copy to clipboard"><i
+                        class="icon-copy"></i></a> {% for tag in package.highest.keywords %}
+                <span class="badge">{{ tag }}</span>
+            {% endfor %}</h2>
+        {% if package.highest.description %}
+            <p>{{ package.highest.description }}</p>
+        {% endif %}
+
+        <dl class="dl-horizontal">
+            {% if package.highest.homepage %}
+                <dt>Homepage:</dt>
+                <dd><a href="{{ package.highest.homepage }}">{{ package.highest.homepage|replace({'http://': ''}) }}</a>
+                </dd>
+            {% endif %}
+            {% if package.highest.support.issues %}
+                <dt>Issues:</dt>
+                <dd><a href="{{ package.highest.support.issues }}">{{ package.highest.support.issues }}</a></dd>
+            {% endif %}
+            {% if package.highest.support.irc %}
+                <dt>IRC:</dt>
+                <dd><a href="{{ package.highest.support.irc }}">{{ package.highest.support.irc }}</a></dd>
+            {% endif %}
+            {% if package.highest.support.forum %}
+                <dt>Forum:</dt>
+                <dd><a href="{{ package.highest.support.forum }}">{{ package.highest.support.forum }}</a></dd>
+            {% endif %}
+            {% if package.highest.support.wiki %}
+                <dt>Wiki:</dt>
+                <dd><a href="{{ package.highest.support.wiki }}">{{ package.highest.support.wiki }}</a></dd>
+            {% endif %}
+            {% if attribute(dependencies, name)|length %}
+                <dt>Required By:</dt>
+                <dd>{{ attribute(dependencies, name)|join(', ') }}</dd>
+            {% endif %}
+        </dl>
+
+        {% if package.versions|length %}
+            <ul class="versions">
+                {% for version in package.versions %}
+                    <li class="version{% if loop.last %} last{% endif %}" id="{{ version.prettyVersion }}">
+                        <section>
+                            <h1>
+                                {%- if version.distType -%}
+                                    <a href="{{ version.distUrl }}"
+                                       title="{{ version.distReference }}">{{- version.prettyVersion -}}
+                                        {% if (version.dev == true) and (getVersionAlias(version)) %}
+                                            / {{ getVersionAlias(version) }}
+                                        {% endif -%}</a>
+                                {%- else -%}
+                                    <a href="{{ version.sourceUrl }}"
+                                       title="{{ version.sourceReference }}">{{- version.prettyVersion -}}
+                                        {% if (version.dev == true) and (getVersionAlias(version)) %}
+                                            / {{ getVersionAlias(version) }}
+                                        {% endif -%}</a>
+                                {%- endif -%}
+                                {% if version.dev == true %}
+                                    <span class="source-reference">reference: {{ version.sourceReference[:7] }}</span>
+                                {% endif %}
+
+                                <span class="release-date">{{ version.releasedAt|date("Y-m-d H:i") }} UTC</span>
+                                <span class="license{% if not version.license %} unknown{% endif %}">{{ version.license ? version.license|join(', ') : 'Unknown License' }}</span>
+                            </h1>
+
+                            <div class="details">
+
+                                <p class="requireme">require: <input type="text" readonly="readonly" value="{{ "\"#{version.name}\": \"#{((version.dev == true) and (getVersionAlias(version))) ? getVersionAlias(version)|replace('.x-dev', '.*@dev') : version.getPrettyVersion|replace('.x-dev', '.*@dev')}\"" }}" /></p>
+
+                                <h2 class="authors">Author{{ version.getAuthors|length > 1 ? 's' : '' }}</h2>
+                                <ul>
+                                    {% for author in version.getAuthors %}
+                                        <li>
+                                            {%- if author.homepage -%}
+                                                <a href="{{ author.homepage }}">{{ author.name }}</a>
+                                            {%- else -%}
+                                                {{ author.name }}
+                                            {%- endif -%}
+                                            {% if author.email %} &lt;<a
+                                                    href="mailto:{{ author.email }}">{{ author.email }}</a>&gt;{% endif -%}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                                <div class="clearfix package-links">
+                                    {% for type in ["require", "devRequire", "suggest", "provide", "conflict", "replace"] %}
+                                        <div class="{{ type }}s">
+                                            <h2>{{ type }}</h2>
+                                            {% if attribute(version, type ~ 's')|length %}
+                                                <ul>
+                                                    {%- for name, link in attribute(version, type ~ 's') -%}
+                                                        <li>{{ name }}
+                                                            : {{ type == 'suggest' ? link : (link.prettyConstraint == 'self.version' ? version.version : link.prettyConstraint) }}</li>
+                                                    {%- endfor -%}
+                                                </ul>
+                                            {% else %}
+                                                None
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                    <div class="dependencies">
+                                        <h2>Required By</h2>
+                                        {% set package_dependencies = attribute(dependencies, name) %}
+                                        {% if package_dependencies|length %}
+                                            <ul>
+                                                {% for dependency in package_dependencies %}
+                                                    <li>{{ dependency }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                            </div>
+                        </section>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>This package has no released version yet, and little information is available.</p>
+        {% endif %}
+    </div>
+{% endfor %}
+
+
+</div>
+</div>
+</div>
+</div>
+
+<footer>
+    <p>
+        <small>This Composer Repository is proudly powered by <a
+                    href="https://github.com/composer/satis">Satis</a> {{ constant('Composer\\Satis\\Satis::VERSION') }}
+            - Last updated:  {{ "now"|date(constant('\DateTime::ISO8601')) }}</small>
+    </p>
+</footer>
+
+<script>
     {% include 'jquery-2.0.0.js' %}
-    $(function(){
-        var packages = $('h3').each(function(){
+    $(function () {
+
+        $("ul#packages li").click(function () {
+            $("#content").children().each(function () {
+                $(this).hide();
+            });
+
+            $("#content div[data-id='" + $(this).attr('id') + "']").show();
+        });
+
+        var packages = $('ul#packages').each(function () {
             var desc = $(this).next('p'),
-                info = desc.length ? desc.next('table') : $(this).next('table');
+                    info = desc.length ? desc.next('table') : $(this).next('table');
             $(this).data('desc', desc);
             $(this).data('info', info);
         });
-        $('input#search').keyup(function(){
+        $('input#search').keyup(function () {
             var needle = $(this).val().toLowerCase(), show;
-            packages.each(function(){
+            packages.each(function () {
                 show = $(this).text().toLowerCase().indexOf(needle) != -1;
                 $(this).toggle(show);
                 $(this).data('desc').toggle(show);
@@ -119,6 +293,6 @@
             });
         }).focus();
     });
-    </script>
+</script>
 </body>
 </html>
