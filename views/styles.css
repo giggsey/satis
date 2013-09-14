@@ -1,3 +1,194 @@
 .container {
     max-width: 95%;
 }
+
+h1 {
+    cursor: pointer;
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    font-weight: bold;
+}
+
+.badge {
+    font-weight: normal;
+    background-color: #666;
+    -webkit-transition: background .2s ease-in-out;
+    -moz-transition: background .2s ease-in-out;
+    -ms-transition: background .2s ease-in-out;
+    -o-transition: background .2s ease-in-out;
+    transition: background .2s ease-in-out;
+}
+
+.badge:hover {
+    background-color: #7e7e7e;
+}
+
+.package {
+    display: none;
+    font-size: 11px;
+}
+
+.package .version h3 {
+    margin-top: 10px;
+}
+
+.packagedescription {
+    font-size: 11pt;
+}
+
+.package .version h4 {
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+.package .version .details {
+    display: none;
+}
+
+.package .version.open .details {
+    display: block;
+}
+
+.package .version.open .details-toggler i:before {
+    content: "\f150";
+}
+
+.package .version .details-toggler i:before {
+    content: "\f152";
+}
+
+.package .version .details-toggler {
+    cursor: pointer;
+    margin-right: 10px;
+    font-size: 13pt;
+    color: #428bca;
+}
+
+.package .versions {
+    list-style: none;
+    clear: both;
+    margin: 0;
+    padding: 0;
+}
+
+.package .version {
+    background: #fafafa;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    margin-bottom: 10px;
+}
+
+.package .version h3 {
+    margin-bottom: 5px;
+    font-weight: normal;
+}
+
+.package .version .source-reference {
+    font-size: 12px;
+}
+
+.package .version .release-date {
+    padding-left: 10px;
+    font-size: 14px;
+    float: right;
+}
+
+.package .version .license {
+    float: right;
+    font-size: 14px;
+    clear: right;
+    text-align: right;
+    line-height: 14px;
+}
+
+.package .requireme {
+    padding: 3px 0 3px 0;
+}
+
+.package .requireme input {
+    border: 0 !important;
+    border-radius: 0;
+    background-color: transparent;
+    font-family: Courier;
+    min-width: 500px;
+    width: auto;
+}
+
+
+.package .package-links .requires, .package .package-links .devRequires, .package .package-links .provides, .package .package-links .conflicts {
+    margin-right: 5px;
+}
+.package .package-links div {
+    float: left;
+    width: 32%;
+    margin-bottom: 10px;
+}
+
+/* Pretty printing styles. Used with prettify.js.
+ *
+ * Name:	Stanley Ng
+ * Email: 	stanleyhlng@googlegroups.com
+ *
+ */
+.pln {
+    color: #bd3613; }
+
+.str {
+    color: #269186; }
+
+.kwd {
+    color: #859900; }
+
+.com {
+    color: #586175;
+    font-style: italic; }
+
+.typ {
+    color: #b58900; }
+
+.lit {
+    color: #2aa198; }
+
+.pun {
+    color: #839496; }
+
+.opn {
+    color: #839496; }
+
+.clo {
+    color: #839496; }
+
+.tag {
+    color: #268bd2; }
+
+.atn {
+    color: #586175; }
+
+.atv {
+    color: #2aa198; }
+
+.dec {
+    color: #268bd2; }
+
+.var {
+    color: #268bd2; }
+
+.fun {
+    color: #FF0000; }
+
+/* Put a border around prettyprinted code snippets. */
+pre.prettyprint {
+    background-color: #fdf6e3;
+    padding: 10px;
+    border: 1px solid #E1E1E8; }
+
+/* Specify class=linenums on a pre to get line numbering */
+ol.linenums {
+    color: #4c666c;
+    margin: 0 0 0 40px; }
+
+ol.linenums li {
+    line-height: 18px;
+    padding-left: 12px; }
