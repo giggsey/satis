@@ -2,12 +2,22 @@
     max-width: 95%;
 }
 
+body {
+	font-family: 'Roboto', sans-serif;
+}
+
 h1 {
     cursor: pointer;
 }
 
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     font-weight: bold;
+	font-family:  'Roboto', sans-serif;
+}
+
+#packages li {
+	margin-top: 2px;
+	margin-bottom: 2px;
 }
 
 .badge {
@@ -192,3 +202,5 @@ ol.linenums {
 ol.linenums li {
     line-height: 18px;
     padding-left: 12px; }
+
+a { cursor: pointer; }

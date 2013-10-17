@@ -7,8 +7,11 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
     <link href="//cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" rel="stylesheet">
+<link href='http://fonts.googleapis.com/css?family=Ubuntu:400,700,400italic,700italic|Roboto:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prettify/r298/lang-basic.min.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled/html4+html5/jquery.history.min.js"></script>
     <style type="text/css">
         {% include 'styles.css' %}
     </style>
@@ -24,7 +27,11 @@
 
     <ul id="packages">
         {% for name, package in packages %}
-            <li id="{{ package.highest.name }}"><a style="cursor:pointer;">{{ package.highest.name }}</a></li>
+            <li id="{{ package.highest.name }}"><a style="cursor:pointer;">{{ package.highest.name }}</a>{% if package.versions|length > 0 %}{% for v in package.versions if v.dev == false %}
+{% if loop.first %}
+<div title='Latest Release' class='label label-info' style='margin-left: .8em;'>{{ v.prettyVersion }}</div>
+{% endif %}
+{% endfor %}{% endif %}</li>
         {% endfor %}
     </ul>
 
@@ -239,7 +246,8 @@ require 'vendor/autoload.php';
                                             {% if attribute(version, type ~ 's')|length %}
                                                 <ul>
                                                     {%- for name, link in attribute(version, type ~ 's') -%}
-                                                        <li>{{ name }}
+                                                        <li>{% if name in packages|keys %}
+<a type='otherpackage' name='{{name}}'>{{ name }}</a>{% else %}{{ name}}{% endif %}
                                                             : {{ type == 'suggest' ? link : (link.prettyConstraint == 'self.version' ? version.version : link.prettyConstraint) }}</li>
                                                     {%- endfor -%}
                                                 </ul>
@@ -278,7 +286,6 @@ require 'vendor/autoload.php';
 </div>
 
 <script>
-    {% include 'jquery-2.0.0.js' %}
     $(function () {
         prettyPrint();
 
@@ -337,6 +344,11 @@ require 'vendor/autoload.php';
         $('.package').on('click', '.requireme input', function (e) {
             this.select();
         });
+
+	$("a[type='otherpackage']").on('click', function(e) {
+		var name = $(this).attr('name').replace('/','\\/');
+		$("#" + name + " a").click();
+	});
 
         $(".dependencies a").click(function(e) {
             e.preventDefault();
